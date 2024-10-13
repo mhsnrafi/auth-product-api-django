@@ -30,9 +30,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
-    'corsheaders',  # Enable CORS headers
+    'corsheaders',
     'account',
     'products',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -44,7 +45,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',  # Required for authentication
 ]
 
 ROOT_URLCONF = 'authAPI.urls'
@@ -71,11 +71,11 @@ WSGI_APPLICATION = 'authAPI.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'your_database_name'),
-        'USER': os.getenv('DB_USER', 'your_database_user'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'your_database_password'),
-        'HOST': os.getenv('DB_HOST', 'localhost'),
-        'PORT': os.getenv('DB_PORT', '5432'),
+        'NAME': os.getenv('POSTGRES_DB_NAME', 'postgres'),  # Ensure this matches your docker-compose value
+        'USER': os.getenv('POSTGRES_USER', 'postgres'),     # Ensure this matches your docker-compose value
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'postgres'),  # Ensure this matches your docker-compose value
+        'HOST': os.getenv('DB_HOST', 'db'),  # Points to the 'db' service in Docker Compose
+        'PORT': os.getenv('DB_PORT', '5432'),  # PostgreSQL default port
     }
 }
 
@@ -122,7 +122,8 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',  # JWT tokens
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',  # Default permission for all views
+        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',  # E# Default permission for all views
     ],
 }
 
@@ -176,4 +177,8 @@ LOGGING = {
 
 # Password reset token expiration
 PASSWORD_RESET_TIMEOUT = 900  # 15 minutes
-LOGIN_URL = '/login/'
+LOGIN_URL = 'login'
+
+SWAGGER_SETTINGS = {
+    'VALIDATOR_URL': 'http://localhost:8189',
+}

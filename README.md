@@ -1,4 +1,4 @@
-Here’s an updated **README.md** that includes instructions for setting up Swagger and ReDoc API documentation using `drf-yasg`, in addition to the previous content:
+Here’s the updated **README.md** file along with the test automation scripts for setting up the project in both development and production environments.
 
 ---
 
@@ -8,13 +8,13 @@ This project is a Django REST API built using Django Rest Framework (DRF) and Si
 
 ## **Features**
 
-- **Authentication**: Custom user registration and JWT-based login
-- **Password management**: Password reset via email and change password functionality
-- **Product management**: APIs for product listing, selection, and reporting
-- **Session Persistence**: Search results and product selections are saved even after re-opening the browser
-- **API Documentation**: Auto-generated API documentation with Swagger and ReDoc using `drf-yasg`
-- **API Testing**: Postman collection provided for API testing
-- **Dockerized**: Runs in a Docker environment for easy deployment and scaling
+- **Authentication**: Custom user registration and JWT-based login.
+- **Password management**: Password reset via email and change password functionality.
+- **Product management**: APIs for product listing, selection, and reporting.
+- **Session Persistence**: Search results and product selections are saved even after re-opening the browser.
+- **API Documentation**: Auto-generated API documentation with Swagger and ReDoc using `drf-yasg`.
+- **API Testing**: Postman collection provided for API testing.
+- **Dockerized**: Runs in a Docker environment for easy deployment and scaling.
 
 ---
 
@@ -209,4 +209,67 @@ Example of `Authorization` header:
 Authorization: Bearer <your_jwt_token>
 ```
 
----# auth-product-api-django
+---
+
+## **Automation Scripts**
+
+You can use the following bash scripts to automate your project setup in both **development** and **production** environments.
+
+### **Development Setup Script**
+
+Here is how to include the information about running the development and production scripts in your **README.md** file.
+
+---
+
+## **Running the Setup Scripts**
+
+### **Development Setup**
+
+For automating the development setup, you can use the provided `dev_setup.sh` script. Follow these steps to run it:
+
+1. **Give execute permission** to the script (only needed the first time):
+   ```bash
+   chmod +x dev_setup.sh
+   ```
+
+2. **Run the development setup script**:
+   ```bash
+   ./dev_setup.sh
+   ```
+
+This script will:
+
+- Pull the latest changes from the GitHub repository.
+- Build the Docker containers.
+- Run database migrations.
+- Optionally create a superuser.
+- Install any new Python dependencies.
+- Start the Django development server.
+
+---
+
+### **Production Setup**
+
+For automating the production setup, use the `prod_setup.sh` script. Follow these steps to run it:
+
+1. **Give execute permission** to the script (only needed the first time):
+   ```bash
+   chmod +x prod_setup.sh
+   ```
+
+2. **Run the production setup script**:
+   ```bash
+   ./prod_setup.sh
+   ```
+
+This script will:
+
+- Pull the latest changes from the GitHub repository.
+- Build the Docker containers for production.
+- Run database migrations without user interaction.
+- Collect static files for production.
+- Start the production server using **Gunicorn** with multiple worker processes.
+
+---
+
+By using these scripts, the setup process for both development and production environments is automated, ensuring consistency and reducing manual errors.ontains instructions for setting up both development and production environments, including running tests and accessing the API documentation via Swagger and ReDoc.

@@ -7,58 +7,95 @@ from .models import Product, ProductReport
 from .serializers import ProductSerializer
 from django.core.exceptions import ObjectDoesNotExist
 
-
-
 class DashboardView(APIView):
+    """
+    Displays the dashboard with a list of products for authenticated users.
+    """
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        if request.user.is_authenticated:
-            products = Product.objects.all()  # Or filter if needed
-            return render(request, 'dashboard.html', {
-                'products': products,
-                'user_email': request.user.email
-            })
-        else:
-            return redirect('login')
+        """
+        Renders the dashboard page with a list of products.
 
-# Admin users can create products
+        Args:
+        - request: The HTTP request object.
+
+        Returns:
+        - Rendered dashboard.html template with product data.
+        """
+        products = Product.objects.all()
+        return render(request, 'dashboard.html', {'products': products, 'user_email': request.user.email})
+
+
 class ProductCreateView(APIView):
-     # Ensure only authenticated users can create products
+    """
+    Allows authenticated users to create new products.
+    """
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
+        """
+        Renders the product creation form for GET requests.
+
+        Args:
+        - request: The HTTP request object.
+
+        Returns:
+        - Rendered create_product.html template.
+        """
         return render(request, 'create_product.html')
 
     def post(self, request, format=None):
+        """
+        Handles product creation for POST requests.
+
+        Args:
+        - request: The HTTP request object with product data.
+
+        Returns:
+        - Redirects to the dashboard after successful creation, or renders form with errors.
+        """
         serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return redirect('dashboard')
         return render(request, 'create_product.html', {'form_errors': serializer.errors})
 
-    def post(self, request, format=None):
-        # Handle product creation logic
-        serializer = ProductSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return redirect('dashboard')  # Redirect to dashboard after successful creation
-        return render(request, 'create_product.html', {'form_errors': serializer.errors})
-
-# View for fetching the logged-in user's email and the product list
 class ProductListView(APIView):
-    # permission_classes = [IsAuthenticated]
-
+    """
+    Lists all products for authenticated users.
+    """
     def get(self, request, format=None):
+        """
+        Renders the product list in the dashboard for GET requests.
+
+        Args:
+        - request: The HTTP request object.
+
+        Returns:
+        - Rendered dashboard.html template with product data.
+        """
         products = Product.objects.all()
         return render(request, 'dashboard.html', {'products': products, 'user_email': request.user.email})
 
 
-# Search functionality for products with sorting options
-# Search functionality for products with sorting options
+
 class ProductSearchView(APIView):
+    """
+    Provides search functionality for products with sorting options.
+    """
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
+        """
+        Handles product search based on a query and sorts by specified fields.
+
+        Args:
+        - request: The HTTP request object with search and sorting data.
+
+        Returns:
+        - JSON response with filtered and sorted product data.
+        """
         search_query = request.GET.get('query', '')
         sort_field = request.GET.get('sort_field', 'name')
         sort_direction = request.GET.get('sort_direction', 'asc')
@@ -68,68 +105,53 @@ class ProductSearchView(APIView):
 
         products = Product.objects.filter(name__icontains=search_query).order_by(sort_field)
         data = list(products.values('id', 'name', 'description', 'price', 'available_stock'))
-
         return Response(data, status=status.HTTP_200_OK)
-
 
 # Mark a product as selected by the user
 class ProductSelectView(APIView):
+    """
+    Allows users to select a product.
+    """
     permission_classes = [IsAuthenticated]
 
     def post(self, request, product_id, format=None):
-        try:
-            product = Product.objects.get(id=product_id)
-            product.selected_by = request.user
-            product.save()
+        """
+        Handles product selection for authenticated users.
 
-            # After successfully selecting the product, redirect or render a success page
-            return redirect('dashboard')  # You can redirect to the dashboard or render a success template
+        Args:
+        - request: The HTTP request object.
+        - product_id: The ID of the product to be selected.
 
-        except Product.DoesNotExist:
-            # If the product is not found, render an error page
-            return render(request, 'product_error.html', {'error': 'Product not found'})
-
-
-
-
-class ProductSelectView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, product_id, format=None):
-        # Get the product by ID
+        Returns:
+        - JSON response or redirect to dashboard if successful, or error message.
+        """
         product = get_object_or_404(Product, id=product_id)
 
-        # Check if the product is already selected by another user
         if product.selected_by and product.selected_by != request.user:
             return Response({'error': 'Product already selected by another user.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Mark the product as selected by the current user
         product.selected_by = request.user
         product.save()
-
-        # Optionally redirect to the dashboard page to refresh the UI
-        if request.accepted_renderer.format == 'html':
-            return redirect('dashboard')
-
-        # For JSON response (API-based interaction)
         return Response({'status': 'Product selected successfully'}, status=status.HTTP_200_OK)
 
-    def get(self, request, product_id, format=None):
-        # Handle GET requests to render a page (if needed)
-        product = get_object_or_404(Product, id=product_id)
-        return render(request, 'product_detail.html', {'product': product})
-
-# Report a product with a reason
 class ProductReportView(APIView):
+    """
+    Allows users to report a product with a reason.
+    """
     permission_classes = [IsAuthenticated]
 
     def post(self, request, product_id, format=None):
+        """
+        Handles product reporting by authenticated users.
+
+        Args:
+        - request: The HTTP request object with the report reason.
+        - product_id: The ID of the product being reported.
+
+        Returns:
+        - Redirects to dashboard or renders an error page.
+        """
+        product = get_object_or_404(Product, id=product_id)
         reason = request.data.get('reason')
-        try:
-            product = Product.objects.get(id=product_id)
-            ProductReport.objects.create(product=product, reported_by=request.user, reason=reason)
-            return redirect('dashboard')
-        except Product.DoesNotExist:
-            return render(request, 'dashboard.html', {'error': 'Product not found'})
-
-
+        ProductReport.objects.create(product=product, reported_by=request.user, reason=reason)
+        return redirect('dashboard')
