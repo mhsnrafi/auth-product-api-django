@@ -273,3 +273,12 @@ This script will:
 ---
 
 By using these scripts, the setup process for both development and production environments is automated, ensuring consistency and reducing manual errors.ontains instructions for setting up both development and production environments, including running tests and accessing the API documentation via Swagger and ReDoc.
+<img width="1728" alt="Screenshot 2024-10-14 at 01 31 21" src="https://github.com/user-attachments/assets/d4ed0b00-380b-4bfd-be05-af8091ff3ad1">
+<img width="960" alt="Screenshot 2024-10-14 at 01 31 12" src="https://github.com/user-attachments/assets/41ccd078-9e68-4cf0-b9f3-3412c529006f">
+<img width="1282" alt="Screenshot 2024-10-14 at 01 31 07" src="https://github.com/user-attachments/assets/17086a6d-6af8-4473-b9f5-058e75502a73">
+<img width="1728" alt="Screenshot 2024-10-14 at 01 30 53" src="https://github.com/user-attachments/assets/8602046e-aa6a-43bf-825f-9585d9a67ab9">
+<img width="1727" alt="Screenshot 2024-10-14 at 01 30 31" src="https://github.com/user-attachments/assets/03c1909c-842d-4170-b16e-8662c7d34905">
+
+
+
+
