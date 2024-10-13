@@ -1,10 +1,10 @@
-Here is the **README.md** file for your project, including all the necessary details, instructions for running it using Docker, listing all API endpoints, and Postman collection usage:
+Here’s an updated **README.md** that includes instructions for setting up Swagger and ReDoc API documentation using `drf-yasg`, in addition to the previous content:
 
 ---
 
-# **Django REST Authentication and Product API with JWT and Docker**
+# **Django REST Authentication and Product API with JWT, Docker, and Swagger**
 
-This project is a Django REST API built using Django Rest Framework (DRF) and Simple JWT for token-based authentication. The API includes features for user registration, login, password management, and product selection. It leverages Docker for containerization and PostgreSQL as the database.
+This project is a Django REST API built using Django Rest Framework (DRF) and Simple JWT for token-based authentication. The API includes features for user registration, login, password management, and product selection. It leverages Docker for containerization and PostgreSQL as the database. Swagger and ReDoc are used for auto-generated API documentation.
 
 ## **Features**
 
@@ -12,6 +12,7 @@ This project is a Django REST API built using Django Rest Framework (DRF) and Si
 - **Password management**: Password reset via email and change password functionality
 - **Product management**: APIs for product listing, selection, and reporting
 - **Session Persistence**: Search results and product selections are saved even after re-opening the browser
+- **API Documentation**: Auto-generated API documentation with Swagger and ReDoc using `drf-yasg`
 - **API Testing**: Postman collection provided for API testing
 - **Dockerized**: Runs in a Docker environment for easy deployment and scaling
 
@@ -23,6 +24,7 @@ This project is a Django REST API built using Django Rest Framework (DRF) and Si
 - **Authentication**: Simple JWT (JSON Web Token)
 - **Database**: PostgreSQL
 - **Containerization**: Docker, Docker Compose
+- **API Documentation**: Swagger and ReDoc using `drf-yasg`
 - **API Testing**: Postman
 
 ---
@@ -34,7 +36,7 @@ This project is a Django REST API built using Django Rest Framework (DRF) and Si
 First, clone the repository to your local machine:
 
 ```bash
-git clone https://github.com/your-username/auth-product-api-django.git
+git clone https://github.com/mhsnrafi/auth-product-api-django.git
 cd auth-product-api-django
 ```
 
@@ -80,12 +82,6 @@ EMAIL_HOST_USER=test@example.com
 EMAIL_HOST_PASSWORD=test_password
 ```
 
-### **Postman Collection**
-
-A Postman collection is provided for easy API testing. You can find the Postman collection in the `postman_collection.json` file in the root of the project.
-
-- Import the collection into Postman to test all the endpoints.
-
 ---
 
 ## **Running the Project Using Docker**
@@ -93,7 +89,7 @@ A Postman collection is provided for easy API testing. You can find the Postman 
 1. **Clone the repository**:
 
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/mhsnrafi/auth-product-api-django.git
    cd auth-product-api-django
    ```
 
@@ -109,9 +105,69 @@ A Postman collection is provided for easy API testing. You can find the Postman 
    docker-compose up --build
    ```
 
-4. **Access the app**:
+4. **Run Migrations**:
+
+   After the containers are up, you need to run database migrations to set up the tables in the PostgreSQL database. Use the following command to run migrations:
+
+   ```bash
+   docker-compose exec web python manage.py migrate
+   ```
+
+5. **Create a superuser (optional)**:
+
+   To create a Django superuser for the admin panel, run:
+
+   ```bash
+   docker-compose exec web python manage.py createsuperuser
+   ```
+
+   Follow the prompts to create an admin user.
+
+6. **Access the app**:
 
    Once Docker has finished building and running your app, you can access it at `http://localhost:8000`.
+
+---
+
+## **Running Tests**
+
+You can run the tests using Docker by executing the following command:
+
+```bash
+docker-compose exec web python manage.py test
+```
+
+This will run all your Django unit tests inside the Docker container.
+
+---
+
+## **Setting Up Swagger and ReDoc API Documentation**
+
+This project uses `drf-yasg` to generate Swagger and ReDoc API documentation automatically. You can access both documentation formats by following these steps:
+
+### **Install `drf-yasg`**
+
+Ensure `drf-yasg` is installed by adding it to your `requirements.txt` or running:
+
+```bash
+pip install drf-yasg
+```
+
+### **Configuring Swagger and ReDoc**
+
+**Access Swagger and ReDoc**:
+
+   After running the project, you can view the API documentation at the following URLs:
+   - Swagger UI: `http://localhost:8000/swagger/`
+   - ReDoc: `http://localhost:8000/redoc/`
+
+---
+
+## **Postman Collection**
+
+A Postman collection is provided for easy API testing. You can find the Postman collection in the `API.postman_collection.json` file in the root of the project.
+
+- Import the collection into Postman to test all the endpoints.
 
 ---
 
@@ -153,4 +209,4 @@ Example of `Authorization` header:
 Authorization: Bearer <your_jwt_token>
 ```
 
----
+---# auth-product-api-django
